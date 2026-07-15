@@ -45,3 +45,7 @@ x_train , x_test , y_train , y_test = train_test_split(
     test_size =0.2 ,
     random_state= 100 ,
     stratify = y )
+
+neg, pos = y_train.value_counts()
+scale_pos_weight = neg / pos
+
