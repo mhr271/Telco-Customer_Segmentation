@@ -11,9 +11,16 @@ import xgboost as xgb
 from xgboost import XGBClassifier
 
 
-df = pd.read_csv("WA_Fn-UseC_-Telco-Customer-Churn.csv")
+df = pd.read_csv('WA_Fn-UseC_-Telco-Customer-Churn.csv')
 print(df.head())
 print(df.shape)
+ 
+df = df.drop(columns=["customerID"])
+ 
+df['TotalCharges'] = pd.to_numeric(df['TotalCharges'], errors='coerce')
+df['TotalCharges'] = df['TotalCharges'].fillna(0)
+ 
+df["churn"] = df["churn"].map({"Yes":1,"No":0})
 
 y = df["Churn"]
 x = df.drop("Churn",axis=1)
