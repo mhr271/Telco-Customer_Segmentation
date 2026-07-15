@@ -49,3 +49,9 @@ x_train , x_test , y_train , y_test = train_test_split(
 neg, pos = y_train.value_counts()
 scale_pos_weight = neg / pos
 
+lr = Pipeline([
+    ( "preprocess" ,preprocessor),
+    ('model',LogisticRegression(max_iter=1000,class_weight='balanced',random_state=100))
+])
+
+
