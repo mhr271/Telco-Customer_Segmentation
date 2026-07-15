@@ -54,4 +54,12 @@ lr = Pipeline([
     ('model',LogisticRegression(max_iter=1000,class_weight='balanced',random_state=100))
 ])
 
+lr.fit(x_train,y_train)
 
+lr_y_train_pred = lr.predict(x_train)
+lr_y_test_pred =  lr.predict(x_test)
+
+lr_train_f1 = f1_score(y_train,lr_y_train_pred)
+lr_train_accuracy =(y_train,lr_y_train_pred)
+lr_train_pr_auc =(y_train,lr_y_train_pred)
+lr_train_confusionmatrix = (y_train,lr_y_train_pred)
