@@ -16,6 +16,9 @@ from sklearn.metrics import (
     f1_score,
     average_precision_score
 )
+from sklearn.metrics import precision_recall_curve
+import numpy as np
+import seaborn as sns
 
 df = pd.read_csv('WA_Fn-UseC_-Telco-Customer-Churn.csv')
 
@@ -148,3 +151,54 @@ print(rf_test_confusionmatrix)
 
 print("\nXGBoost - Test Confusion Matrix:")
 print(xgboost_test_confusionmatrix)
+
+
+plt.figure(figsize=(7, 6))
+
+for name, probs in [
+    ("Logistic Regression", lr_y_test_prob),
+    ("Random Forest", rf_y_test_prob),
+    ("XGBoost", xgboost_y_test_prob)
+]:
+    precision, recall, _ = precision_recall_curve(y_test, probs)
+    plt.plot(recall, precision, label=name)
+
+plt.xlabel('Recall')
+plt.ylabel('Precision')
+plt.title('Precision-Recall Curves (Test Set)')
+plt.legend()
+plt.tight_layout()
+plt.savefig('pr_curves.png', dpi=150)
+plt.show()
+
+fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+matrices = [
+    ("Logistic Regression", lr_test_confusionmatrix),
+    ("Random Forest", rf_test_confusionmatrix),
+    ("XGBoost", xgboost_test_confusionmatrix)
+]
+
+for ax, (name, cm) in zip(axes, matrices):
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+                xticklabels=['Stay', 'Churn'], yticklabels=['Stay', 'Churn'], ax=ax)
+    ax.set_title(name)
+    ax.set_xlabel('Predicted')
+    ax.set_ylabel('Actual')
+
+plt.tight_layout()
+plt.savefig('confusion_matrices.png', dpi=150)
+plt.show()
+
+feature_names = preprocessor.get_feature_names_out()
+
+xgb_importances = xgboost.named_steps['model'].feature_importances_
+xgb_imp_df = pd.DataFrame({'Feature': feature_names, 'Importance': xgb_importances})
+xgb_imp_df = xgb_imp_df.sort_values('Importance', ascending=False).head(10)
+
+plt.figure(figsize=(8, 6))
+plt.barh(xgb_imp_df['Feature'], xgb_imp_df['Importance'])
+plt.gca().invert_yaxis()
+plt.title('XGBoost - Top 10 Feature Importances')
+plt.tight_layout()
+plt.savefig('xgb_feature_importance.png', dpi=150)
+plt.show()
