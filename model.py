@@ -18,8 +18,7 @@ from sklearn.metrics import (
 )
 
 df = pd.read_csv('WA_Fn-UseC_-Telco-Customer-Churn.csv')
-print(df.head())
-print(df.shape)
+
  
 df = df.drop(columns=["customerID"])
  
@@ -74,7 +73,11 @@ lr_test_confusionmatrix = confusion_matrix(y_test, lr_y_test_pred)
 
 rf = Pipeline([
  ('preprocess',preprocessor),
- ('model',RandomForestClassifier(n_estimators=300,class_weight='balanced',random_state=100))
+ ('model',RandomForestClassifier(n_estimators=300,
+        max_depth=6,          
+        min_samples_leaf=20,   
+        class_weight='balanced',
+        random_state=100))
 ])
 
 rf.fit(x_train,y_train)
