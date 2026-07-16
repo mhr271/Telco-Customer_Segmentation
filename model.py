@@ -26,7 +26,7 @@ df = df.drop(columns=["customerID"])
 df['TotalCharges'] = pd.to_numeric(df['TotalCharges'], errors='coerce')
 df['TotalCharges'] = df['TotalCharges'].fillna(0)
  
-df["churn"] = df["churn"].map({"Yes":1,"No":0})
+df["Churn"] = df["Churn"].map({"Yes":1,"No":0})
 
 y = df["Churn"]
 x = df.drop("Churn",axis=1)
@@ -35,13 +35,13 @@ categorical_cols = x.select_dtypes(include=["object"]).columns
 numerical_cols = x.select_dtypes(include=["number"]).columns
 
 preprocessor = ColumnTransformer(
-    transformer=[
-    ('num',StandardScaler(),numerical_cols)
-    ('cat',OneHotEncoder(handle_unknown='ignore'),categorical_cols)
+    transformers=[
+        ('num', StandardScaler(), numerical_cols),
+        ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_cols)
     ]
 )
 
-x_train , x_test , y_train , y_test = train_test_split(
+x_train , x_test , y_train , y_test = train_test_split(x,y,
     test_size =0.2 ,
     random_state= 100 ,
     stratify = y )
@@ -123,3 +123,25 @@ xgboost_test_f1 = f1_score(y_test,xgboost_y_test_pred)
 xgboost_test_accuracy = accuracy_score(y_test,xgboost_y_test_pred)
 xgboost_test_pr_auc = average_precision_score(y_test,xgboost_y_test_prob)
 xgboost_test_confusionmatrix = confusion_matrix(y_test,xgboost_y_test_pred)
+
+results = pd.DataFrame({
+    'Model': ['Logistic Regression', 'Random Forest', 'XGBoost'],
+    'Train F1': [lr_train_f1, rf_train_f1, xgboost_train_f1],
+    'Test F1': [lr_test_f1, rf_test_f1, xgboost_test_f1],
+    'Train Accuracy': [lr_train_accuracy, rf_train_accuracy, xgboost_train_accuracy],
+    'Test Accuracy': [lr_test_accuracy, rf_test_accuracy, xgboost_test_accuracy],
+    'Train PR-AUC': [lr_train_pr_auc, rf_train_pr_auc, xgboost_train_pr_auc],
+    'Test PR-AUC': [lr_test_pr_auc, rf_test_pr_auc, xgboost_test_pr_auc],
+})
+
+results = results.round(3)
+print(results.to_string(index=False))
+
+print("Logistic Regression - Test Confusion Matrix:")
+print(lr_test_confusionmatrix)
+
+print("\nRandom Forest - Test Confusion Matrix:")
+print(rf_test_confusionmatrix)
+
+print("\nXGBoost - Test Confusion Matrix:")
+print(xgboost_test_confusionmatrix)
