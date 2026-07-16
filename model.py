@@ -71,3 +71,9 @@ lr_test_f1 = f1_score(y_test, lr_y_test_pred)
 lr_test_accuracy = accuracy_score(y_test, lr_y_test_pred)
 lr_test_pr_auc = average_precision_score(y_test, lr_y_test_prob)
 lr_test_confusionmatrix = confusion_matrix(y_test, lr_y_test_pred)
+
+rf = Pipeline([
+ ('preprocess',preprocessor),
+ ('scale',StandardScaler()),
+ ('model',RandomForestClassifier(n_estimators=300,class_weight='balanced',random_state=100))
+])
