@@ -1,43 +1,44 @@
 # Telco Customer Churn Prediction
 
-A machine learning project to predict whether a telecom customer will churn (leave the company) or not, based on their account and service details.
+Predicts whether a telecom customer will churn or stay, using their account and service details. Built with Logistic Regression, Random Forest, and XGBoost, compared on F1, accuracy, and PR-AUC.
 
 ## Dataset
 
 - **Source:** [Telco Customer Churn (IBM dataset)](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)
 - **File:** `WA_Fn-UseC_-Telco-Customer-Churn.csv`
-- Contains ~7,000 fictional customers with demographic info, subscribed services, account details, and whether they churned.
+- ~7,000 fictional customers with demographic info, subscribed services, account details, and whether they churned.
 
 ## Goal
 
-Build a binary classification model to predict the `Churn` column (Yes/No) using the other customer features.
+Binary classification to predict the `Churn` column (Yes/No) using the other customer features.
+
 
 ## Models Used
 
 - Logistic Regression (baseline)
-- Random Forest Classifier
+- Random Forest Classifier (`max_depth=6`, `min_samples_leaf=20` — tuned to fix overfitting)
 - XGBoost Classifier
 
-## Project Status
+## Results (Test Set)
 
-🚧 In progress — data preprocessing and model training not completed yet.
+| Model | F1 | Accuracy | PR-AUC |
+|---|---|---|---|
+| Logistic Regression | 0.632 | 0.744 | 0.628 |
+| Random Forest | 0.627 | 0.742 | 0.648 |
+| XGBoost | 0.628 | 0.744 | 0.645 |
 
-## Steps (planned)
+All three models perform similarly, with train/test scores staying close together (no overfitting after tuning). Logistic Regression is the most interpretable of the three and performs on par with the others, making it a strong choice for this dataset.
 
-1. Load and explore the dataset
-2. Clean data (handle missing values, encode categorical features)
-3. Split into train/test sets
-4. Train Logistic Regression, Random Forest, and XGBoost
-5. Compare models using accuracy, precision, recall, F1, and ROC-AUC
-6. Identify the most important features driving churn
+## Visualizations
 
-## Results
+- `pr_curves.png` — Precision-Recall curves comparing all three models
+- `confusion_matrices.png` — Test set confusion matrix for each model
+- `xgb_feature_importance.png` — Top 10 features driving churn predictions (XGBoost)
 
-
-## Technical Requirements
+## Tech Stack
 
 - Python
 - pandas
 - scikit-learn
 - XGBoost
-- matplotlib
+- matplotlib / seaborn
